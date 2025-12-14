@@ -10,6 +10,8 @@ import './config/passport'; // Execute the passport config
 import authRoutes from './routes/authRoutes';
 import adminRoutes from './routes/adminRoutes';
 import businessRoutes from './routes/businessRoutes';
+import complaintRoutes from './routes/complaintRoutes';
+import analyticsRoutes from './routes/analyticsRoutes';
 
 // Load environment variables
 
@@ -49,6 +51,10 @@ app.use(authRoutes);          // Handles /api/current_user (since we defined it 
 app.use('/api/admin', adminRoutes);
 // Business Routes
 app.use('/api/business', businessRoutes);
+// Complaint Routes
+app.use('/api/complaints', complaintRoutes);
+// Admin Analytics
+app.use('/api/admin', analyticsRoutes);
 
 // Basic Health Check Route
 app.get('/', (req: Request, res: Response) => {
