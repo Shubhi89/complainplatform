@@ -8,6 +8,8 @@ import session from 'express-session';
 import passport from 'passport';
 import './config/passport'; // Execute the passport config
 import authRoutes from './routes/authRoutes';
+import adminRoutes from './routes/adminRoutes';
+import businessRoutes from './routes/businessRoutes';
 
 // Load environment variables
 
@@ -43,6 +45,10 @@ app.use(passport.session());
 // Routes
 app.use('/auth', authRoutes); // Handles /auth/google
 app.use(authRoutes);          // Handles /api/current_user (since we defined it with /api prefix inside)
+// Admin Routes (Prefix with /api/admin)
+app.use('/api/admin', adminRoutes);
+// Business Routes
+app.use('/api/business', businessRoutes);
 
 // Basic Health Check Route
 app.get('/', (req: Request, res: Response) => {
