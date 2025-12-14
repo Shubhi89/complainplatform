@@ -1,12 +1,16 @@
+import 'dotenv/config';
 import express, { Application, Request, Response } from 'express';
-import dotenv from 'dotenv';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import connectDB from './config/db';
+import session from 'express-session';
+import passport from 'passport';
+import './config/passport'; // Execute the passport config
+import authRoutes from './routes/authRoutes';
 
 // Load environment variables
-dotenv.config();
+
 
 // Connect to Database
 connectDB();
@@ -19,6 +23,26 @@ app.use(express.json()); // Parse JSON bodies
 app.use(cors());         // Allow cross-origin requests
 app.use(helmet());       // Security headers
 app.use(morgan('dev'));  // Logger
+
+// Session Configuration
+app.use(
+  session({
+    secret: process.env.COOKIE_KEY || 'secret_key',
+    resave: false,             // Don't save session if unmodified
+    saveUninitialized: false,  // Don't create session until something stored
+    cookie: {
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    }
+  })
+);
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session()); 
+
+// Routes
+app.use('/auth', authRoutes); // Handles /auth/google
+app.use(authRoutes);          // Handles /api/current_user (since we defined it with /api prefix inside)
 
 // Basic Health Check Route
 app.get('/', (req: Request, res: Response) => {
