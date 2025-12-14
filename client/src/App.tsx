@@ -1,10 +1,25 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import Login from "./pages/Login.tsx";
+import AuthSuccess from "./pages/AuthSuccess";
+import { RootRedirect, RoleRoute } from "./components/RoleRoute";
 
 // Placeholder components (We will build these next)
-const Login = () => <div className="p-10 text-xl font-bold text-center">Login Page Coming Soon</div>;
-const ConsumerDashboard = () => <div className="p-10 text-xl font-bold text-blue-600">Consumer Dashboard</div>;
-const BusinessDashboard = () => <div className="p-10 text-xl font-bold text-green-600">Business Dashboard</div>;
-const AdminDashboard = () => <div className="p-10 text-xl font-bold text-red-600">Admin Fortress</div>;
+const ConsumerDashboard = () => (
+  <div className="p-10 text-xl font-bold text-blue-600">Consumer Dashboard</div>
+);
+const BusinessDashboard = () => (
+  <div className="p-10 text-xl font-bold text-green-600">
+    Business Dashboard
+  </div>
+);
+const AdminDashboard = () => (
+  <div className="p-10 text-xl font-bold text-red-600">Admin Fortress</div>
+);
 
 function App() {
   return (
@@ -14,10 +29,35 @@ function App() {
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
 
+        <Route path="/auth/success" element={<AuthSuccess />} />
+
         {/* Protected Routes (We will add security checks later) */}
-        <Route path="/dashboard/consumer" element={<ConsumerDashboard />} />
-        <Route path="/dashboard/business" element={<BusinessDashboard />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route
+          path="/dashboard/consumer"
+          element={
+            <RoleRoute allowedRoles={["CONSUMER"]}>
+              <ConsumerDashboard />
+            </RoleRoute>
+          }
+        />
+
+        <Route
+          path="/dashboard/business"
+          element={
+            <RoleRoute allowedRoles={["BUSINESS"]}>
+              <BusinessDashboard />
+            </RoleRoute>
+          }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            <RoleRoute allowedRoles={["ADMIN"]}>
+              <AdminDashboard />
+            </RoleRoute>
+          }
+        />
       </Routes>
     </Router>
   );

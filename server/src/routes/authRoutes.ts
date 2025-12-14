@@ -1,5 +1,6 @@
 import express from 'express';
 import passport from 'passport';
+import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
@@ -19,13 +20,22 @@ router.get('/google', (req, res, next) => {
 
 // @route   GET /auth/google/callback
 // @desc    Google calls this after login
-router.get('/google/callback', 
-  passport.authenticate('google', { failureRedirect: '/' }),
+router.get(
+  '/google/callback',
+  passport.authenticate('google', { session: false, failureRedirect: '/login' }),
   (req, res) => {
-    // Successful authentication
-    // In a real app, we redirect to the frontend dashboard
-    // For now, we redirect to a JSON viewer to see if it worked
-    res.redirect('/api/current_user');
+    // 1. Get the user from the request
+    const user = req.user as any;
+
+    // 2. Generate the Token DIRECTLY here (Fixes the "not a function" error)
+    const token = jwt.sign(
+      { _id: user._id, role: user.role },
+      process.env.JWT_SECRET as string,
+      { expiresIn: '7d' }
+    );
+
+    // 3. Redirect to Frontend with token
+    res.redirect(`http://localhost:5173/auth/success?token=${token}`);
   }
 );
 
