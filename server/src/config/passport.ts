@@ -1,6 +1,7 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import User, { IUser, UserRole } from '../models/User';
+import { generateCustomId } from '../services/idGenerator';
 
 // 1. Serialize User (Store user ID in the session)
 passport.serializeUser((user: any, done) => {
@@ -49,15 +50,18 @@ passport.use(
         }
 
         // C. Create the new User
+        const customId = await generateCustomId('user_id', 'USR');
+
         const newUser = await new User({
           googleId: profile.id,
           email: profile.emails?.[0].value,
           displayName: profile.displayName,
           role: role, 
-          // customId will be generated later
+          customId: customId // <--- Now we save the generated ID
         }).save();
 
         done(null, newUser);
+        console.log('New user created:', newUser , customId);
 
       } catch (error) {
         done(error, undefined);
