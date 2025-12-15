@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import Login from "./pages/Login.tsx";
 import AuthSuccess from "./pages/AuthSuccess";
-import { RootRedirect, RoleRoute } from "./components/RoleRoute";
+import { RootRedirect , RoleRoute } from "./components/RoleRoute";
 
 // Placeholder components (We will build these next)
 const ConsumerDashboard = () => (
@@ -26,11 +26,11 @@ function App() {
     <Router>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
 
-        <Route path="/auth/success" element={<AuthSuccess />} />
+        <Route path="/google-callback" element={<AuthSuccess />} />
 
+        <Route path="/" element={<RootRedirect />} />
         {/* Protected Routes (We will add security checks later) */}
         <Route
           path="/dashboard/consumer"

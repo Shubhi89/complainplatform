@@ -8,27 +8,26 @@ const AuthSuccess = () => {
   const navigate = useNavigate();
   const { checkAuth } = useAuth();
 
-  useEffect(() => {
+ useEffect(() => {
     const handleLogin = async () => {
-      // 1. Get Token from URL (if your backend sends it this way)
       const token = searchParams.get('token');
+      console.log("1. AuthSuccess Loaded. Token found?", !!token);
 
       if (token) {
-        // Save token to LocalStorage (so axios can use it)
         localStorage.setItem('token', token);
-        
-        // Configure Axios to use this token for all future requests
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         
-        // 2. Force a check: "Who am I?"
-        await checkAuth();
-
-        // 3. We need to decide where to go. 
-        // We will do this by fetching the user profile again or trusting checkAuth
-        // For now, let's redirect to a temporary "router" page or root
-        navigate('/'); 
+        console.log("2. Token saved. Attempting checkAuth...");
+        try {
+          await checkAuth();
+          console.log("3. checkAuth success! Redirecting to home...");
+          navigate('/'); 
+        } catch (err) {
+          console.error("3. checkAuth FAILED:", err);
+          navigate('/login');
+        }
       } else {
-        // If no token, something went wrong. Back to login.
+        console.error("1. No token in URL. Redirecting to login.");
         navigate('/login');
       }
     };
