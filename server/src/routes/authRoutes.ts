@@ -41,13 +41,13 @@ router.get(
 
 // @route   GET /api/current_user
 // @desc    Get the currently logged in user
-router.get('/api/current_user', (req, res) => {
+router.get('/current_user', (req, res) => {
   res.send(req.user);
 });
 
 // @route   GET /api/logout
 // @desc    Log out user
-router.get('/api/logout', (req, res, next) => {
+router.get('/logout', (req, res, next) => {
   req.logout((err) => {
     if (err) { return next(err); }
     res.redirect('/');

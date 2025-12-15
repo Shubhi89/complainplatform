@@ -45,8 +45,7 @@ app.use(passport.initialize());
 app.use(passport.session()); 
 
 // Routes
-app.use('/auth', authRoutes); // Handles /auth/google
-app.use(authRoutes);          // Handles /api/current_user (since we defined it with /api prefix inside)
+app.use('/auth', authRoutes); // Handles /auth/google      // Handles /api/current_user (since we defined it with /api prefix inside)
 // Admin Routes (Prefix with /api/admin)
 app.use('/api/admin', adminRoutes);
 // Business Routes
