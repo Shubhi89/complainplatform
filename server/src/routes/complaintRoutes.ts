@@ -1,8 +1,9 @@
 import express, { Request, Response } from 'express';
 import { requireRole } from '../middleware/authMiddleware';
-import { UserRole } from '../models/User';
+import User, { UserRole } from '../models/User';
 import Complaint, { ComplaintStatus } from '../models/Complaint';
 import { generateCustomId } from '../services/idGenerator';
+import mongoose from 'mongoose';
 
 const router = express.Router();
 
@@ -18,6 +19,17 @@ router.post(
 
       if (!title || !description || !businessId) {
         res.status(400).json({ message: 'Please provide title, description, and business ID' });
+        return;
+      }
+
+      if (!mongoose.Types.ObjectId.isValid(businessId)) {
+        res.status(400).json({ message: 'Invalid Business ID format. It must be a 24-character code.' });
+        return;
+      }
+
+      const businessUser = await User.findById(businessId);
+      if (!businessUser || businessUser.role !== UserRole.BUSINESS) {
+        res.status(404).json({ message: 'Business not found. Please check the ID.' });
         return;
       }
 
@@ -44,7 +56,7 @@ router.post(
       });
 
     } catch (error) {
-      console.error(error);
+      console.error("Create Complaint Error:", error);
       res.status(500).json({ message: 'Server Error' });
     }
   }
@@ -139,6 +151,43 @@ router.post(
             res.status(500).json({ message: 'Server Error' });
         }
     }
+);
+
+router.patch(
+  '/:id/status',
+  requireRole([UserRole.BUSINESS]),
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { status } = req.body;
+      const complaintId = req.params.id;
+      const businessId = (req.user as any)._id;
+
+      // Validate status enum
+      if (!Object.values(ComplaintStatus).includes(status)) {
+        res.status(400).json({ message: 'Invalid status value' });
+        return;
+      }
+
+      const complaint = await Complaint.findOne({ 
+        _id: complaintId, 
+        business: businessId 
+      });
+
+      if (!complaint) {
+        res.status(404).json({ message: 'Complaint not found or unauthorized' });
+        return;
+      }
+
+      complaint.status = status;
+      await complaint.save();
+
+      res.json({ success: true, complaint });
+
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server Error' });
+    }
+  }
 );
 
 export default router;

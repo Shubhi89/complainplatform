@@ -50,13 +50,13 @@ app.use(attachUser);
 // Routes
 app.use('/auth', authRoutes); // Handles /auth/google      // Handles /api/current_user (since we defined it with /api prefix inside)
 // Admin Routes (Prefix with /api/admin)
-app.use('/api/admin', adminRoutes);
+app.use('/admin', adminRoutes);
 // Business Routes
-app.use('/api/business', businessRoutes);
+app.use('/business', businessRoutes);
 // Complaint Routes
-app.use('/api/complaints', complaintRoutes);
+app.use('/complaints', complaintRoutes);
 // Admin Analytics
-app.use('/api/admin', analyticsRoutes);
+app.use('/admin', analyticsRoutes);
 
 // Basic Health Check Route
 app.get('/', (req: Request, res: Response) => {

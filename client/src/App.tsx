@@ -9,14 +9,11 @@ import AuthSuccess from "./pages/AuthSuccess";
 import { RootRedirect , RoleRoute } from "./components/RoleRoute";
 import ConsumerDashboard from "./pages/ConsumerDashboard.tsx";
 import CreateComplaint from "./pages/CreateComplaint.tsx";
+import BusinessDashboard from "./pages/BusinessDashboard.tsx";
 
 // Placeholder components (We will build these next)
 
-const BusinessDashboard = () => (
-  <div className="p-10 text-xl font-bold text-green-600">
-    Business Dashboard
-  </div>
-);
+
 const AdminDashboard = () => (
   <div className="p-10 text-xl font-bold text-red-600">Admin Fortress</div>
 );
