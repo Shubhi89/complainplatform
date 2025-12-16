@@ -19,6 +19,7 @@ interface BusinessRequest {
 const AdminDashboard = () => {
   const [requests, setRequests] = useState<BusinessRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false);
   const navigate = useNavigate();
 
   // Fetch Pending Requests
@@ -26,13 +27,17 @@ const AdminDashboard = () => {
   try {
     const res = await axios.get('/api/admin/pending-verifications');
     setRequests(res.data);
+    setIsAuthorized(true);
   } catch (error: any) {
     // SECURITY CHECK:
-    if (error.response?.status === 403 && error.response?.data?.requiresSecret) {
-      // Redirect to the verification page immediately
-      navigate('/admin/verify');
-      return;
-    }
+    if (
+        error.response?.status === 403 && 
+        (error.response?.data?.code === 'SECRET_REQUIRED' || error.response?.data?.requiresSecret)
+      ) {
+        // Redirect to the secret entry page
+        navigate('/admin/verify');
+        return;
+      }
     console.error("Error fetching requests", error);
   } finally {
     setLoading(false);
@@ -42,6 +47,17 @@ const AdminDashboard = () => {
   useEffect(() => {
     fetchRequests();
   }, []);
+
+  if (loading || !isAuthorized) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-red-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-500 font-medium">Verifying Admin Access...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Handle Approval / Rejection
   const handleDecision = async (id: string, action: 'APPROVED' | 'REJECTED') => {

@@ -18,6 +18,7 @@ const AdminVerify = () => {
       // Send code to backend
       // Note: Proxy handles /api/admin -> /admin
       await axios.post('/api/admin/verify-secret', { secret });
+      console.log(secret);
       
       // If successful, go to Dashboard
       navigate('/admin');

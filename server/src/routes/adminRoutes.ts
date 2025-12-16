@@ -26,6 +26,11 @@ router.post('/verify-secret', requireRole([UserRole.ADMIN]), (req: Request, res:
   const { secret } = req.body;
   const correctCode = process.env.ADMIN_SECRET_CODE;
 
+  console.log("🔐 Secret Verification Attempt:");
+  console.log("   Received from Frontend:", secret);
+  console.log("   Expected from .env:", correctCode);
+  console.log("   Do they match?", secret === correctCode);
+
   if (!secret || secret !== correctCode) {
     return res.status(401).json({ success: false, message: 'Invalid Secret Code' });
   }
