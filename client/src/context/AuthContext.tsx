@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import type { User, AuthState } from '../types';
+import { AuthState } from '../types';
 
 interface AuthContextType extends AuthState {
   checkAuth: () => Promise<void>;
@@ -17,35 +17,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   });
 
   const checkAuth = async () => {
-    // 1. Check if we have a token saved in the browser
+    // 1. Retrieve token from storage
     const token = localStorage.getItem('token');
 
-    // 2. If no token, we are definitely not logged in
+    // 2. If no token, user is not logged in
     if (!token) {
-      setState({
-        user: null,
-        loading: false,
-        isAuthenticated: false,
-      });
+      setState({ user: null, loading: false, isAuthenticated: false });
       return;
     }
 
-    // 3. CRITICAL: Restore the token to Axios so the backend accepts us
+    // 3. Set the token for all Axios requests
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
     try {
-      // 4. Verify with Backend
-      // (Note: We use the /api/auth prefix which the proxy handles)
-      const SX = await axios.get('/api/auth/current_user'); 
+      // 4. Verify with backend
+      const res = await axios.get('/api/auth/current_user'); 
       
       setState({
-        user: SX.data,
-        isAuthenticated: !! SX.data,
+        user: res.data,
+        isAuthenticated: !!res.data,
         loading: false,
       });
     } catch (error) {
-      console.error("Auth Check Failed:", error);
-      // If the token is invalid (expired/wrong), clear it out
+      // If token is invalid, clear everything
+      console.error("Session expired or invalid");
       localStorage.removeItem('token');
       delete axios.defaults.headers.common['Authorization'];
       
@@ -59,26 +54,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = async () => {
     try {
-      await axios.get('/api/auth/logout');
-    } catch (error) {
-      console.error("Logout error", error);
+        await axios.get('/api/auth/logout');
+    } catch (e) {
+        console.error(e);
     }
-    
-    // Cleanup
     localStorage.removeItem('token');
     delete axios.defaults.headers.common['Authorization'];
     window.location.href = '/login';
   };
 
-  // Run this check immediately when the app starts
   useEffect(() => {
     checkAuth();
   }, []);
 
-  const value = { ...state, checkAuth, logout };
-
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ ...state, checkAuth, logout }}>
       {children}
     </AuthContext.Provider>
   );

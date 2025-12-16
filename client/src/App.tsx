@@ -7,11 +7,11 @@ import {
 import Login from "./pages/Login.tsx";
 import AuthSuccess from "./pages/AuthSuccess";
 import { RootRedirect , RoleRoute } from "./components/RoleRoute";
+import ConsumerDashboard from "./pages/ConsumerDashboard.tsx";
+import CreateComplaint from "./pages/CreateComplaint.tsx";
 
 // Placeholder components (We will build these next)
-const ConsumerDashboard = () => (
-  <div className="p-10 text-xl font-bold text-blue-600">Consumer Dashboard</div>
-);
+
 const BusinessDashboard = () => (
   <div className="p-10 text-xl font-bold text-green-600">
     Business Dashboard
@@ -40,6 +40,12 @@ function App() {
             </RoleRoute>
           }
         />
+
+        <Route path="/complaint/new" element={
+          <RoleRoute allowedRoles={['CONSUMER']}>
+            <CreateComplaint />
+          </RoleRoute>
+        } />
 
         <Route
           path="/dashboard/business"

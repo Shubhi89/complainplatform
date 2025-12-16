@@ -12,6 +12,7 @@ import adminRoutes from './routes/adminRoutes';
 import businessRoutes from './routes/businessRoutes';
 import complaintRoutes from './routes/complaintRoutes';
 import analyticsRoutes from './routes/analyticsRoutes';
+import { attachUser } from './middleware/jwtAuth';
 
 // Load environment variables
 
@@ -43,6 +44,8 @@ app.use(
 // Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session()); 
+
+app.use(attachUser);
 
 // Routes
 app.use('/auth', authRoutes); // Handles /auth/google      // Handles /api/current_user (since we defined it with /api prefix inside)
