@@ -10,7 +10,10 @@ const router = express.Router();
 // @param   role (optional query param: 'BUSINESS' or 'CONSUMER')
 router.get('/google', (req, res, next) => {
   const role = req.query.role as string || 'CONSUMER'; // Default to Consumer
-  
+  if (req.session) {
+    (req.session as any).tempRole = role;
+    req.session.save(); // Force save to be safe
+  }
   // Pass the role as the 'state' to Google
   passport.authenticate('google', {
     scope: ['profile', 'email'],

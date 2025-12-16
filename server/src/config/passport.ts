@@ -41,12 +41,12 @@ passport.use(
         // The state is passed as a base64 string or plain text from the frontend
         let role = UserRole.CONSUMER; // Default
         
-        if (req.query.state) {
-            // Simple check: logic to decode state if complex, or direct string check
-            const stateStr = req.query.state as string;
-            if (stateStr.includes('BUSINESS')) {
-                role = UserRole.BUSINESS;
-            }
+        if (req.session && (req.session as any).tempRole) {
+          const requestedRole = (req.session as any).tempRole;
+          // Validate it's a valid role
+          if (['CONSUMER', 'BUSINESS', 'ADMIN'].includes(requestedRole)) {
+            role = requestedRole;
+          }
         }
 
         // C. Create the new User

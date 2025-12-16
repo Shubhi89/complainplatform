@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { 
@@ -24,6 +25,7 @@ interface Complaint {
 
 const BusinessDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [loading, setLoading] = useState(true);
   const [copySuccess, setCopySuccess] = useState('');
@@ -104,10 +106,20 @@ const BusinessDashboard = () => {
           </div>
 
           <div className="w-full md:w-auto flex items-center gap-3">
-             <div className="px-4 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-sm font-medium border border-emerald-100 flex items-center justify-center w-full md:w-auto">
-               <CheckCircle className="w-4 h-4 mr-2" />
-               Account Active
-             </div>
+             {user?.isVerified ? (
+               <div className="px-4 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-sm font-medium border border-emerald-100 flex items-center">
+                 <CheckCircle className="w-4 h-4 mr-2" />
+                 Verified Business
+               </div>
+             ) : (
+               <button 
+                 onClick={() => navigate('/business/verify')}
+                 className="px-4 py-2 bg-orange-50 text-orange-700 border border-orange-200 rounded-lg text-sm font-medium flex items-center hover:bg-orange-100 transition"
+               >
+                 <AlertCircle className="w-4 h-4 mr-2" />
+                 Verify Account
+               </button>
+             )}
           </div>
         </div>
 

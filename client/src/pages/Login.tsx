@@ -33,7 +33,7 @@ const Login = () => {
         <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-10 border border-gray-100">
           
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Welcome Back</h2>
+            <h2 className="text-3xl font-bold text-gray-900">Welcome to complain platform</h2>
             <p className="text-gray-500 mt-2">Please select your role to continue</p>
           </div>
 
