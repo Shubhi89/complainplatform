@@ -28,6 +28,7 @@ const AdminDashboard = () => {
     const res = await axios.get('/api/admin/pending-verifications');
     setRequests(res.data);
     setIsAuthorized(true);
+    console.log(res.data);
   } catch (error: any) {
     // SECURITY CHECK:
     if (

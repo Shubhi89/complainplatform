@@ -18,6 +18,7 @@ const storage = new CloudinaryStorage({
   params: async (req, file) => {
     return {
       folder: 'complaint-platform-docs', // The folder name in your Cloudinary dashboard
+      resource_type : 'auto',
       allowed_formats: ['jpg', 'png', 'pdf', 'jpeg'], // Limit file types
       public_id: `doc-${Date.now()}`, // Unique filename
     };

@@ -1,40 +1,28 @@
 import { Request, Response, NextFunction } from 'express';
 import { UserRole } from '../models/User';
 
-// Extend the Session type to include our custom flag
-declare module 'express-session' {
-  interface SessionData {
-    isSecretVerified?: boolean;
+// 1. Basic Authentication Check (Is the user logged in?)
+export const ensureAuth = (req: Request, res: Response, next: NextFunction) => {
+  if (req.isAuthenticated()) {
+    return next();
   }
-}
+  res.status(401).json({ message: 'Unauthorized: Please log in' });
+};
 
-/**
- * Middleware to check if the user has the required Role
- */
-export const requireRole = (allowedRoles: UserRole[]) => {
+// 2. Role-Based Access Control (Is the user an Admin/Business?)
+export const requireRole = (roles: UserRole[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    // 1. Check if user is logged in
-    if (!req.user) {
-      return res.status(401).json({ message: 'Unauthorized: Please log in' });
-    }
-
-    // 2. Check if user has the correct role
-    const user = req.user as any; // (Type assertion for simplicity)
     
-    if (!allowedRoles.includes(user.role)) {
-      return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
+    // First, ensure they are logged in (Safety check)
+    if (!req.user) {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    // 3. SPECIAL CHECK: If user is ADMIN, they must also have verified the secret
-    if (user.role === UserRole.ADMIN) {
-      // We check the session for the flag
-      if (!req.session.isSecretVerified) {
-         // Specific error code tells Frontend to show "Enter Secret Code" screen
-         return res.status(403).json({ 
-           message: 'Security Challenge Required', 
-           code: 'SECRET_REQUIRED' 
-         });
-      }
+    const user = req.user as any;
+
+    // Check if the user's role is in the allowed list
+    if (!roles.includes(user.role)) {
+      return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
     }
 
     next();
