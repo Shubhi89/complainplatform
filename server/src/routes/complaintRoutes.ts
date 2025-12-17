@@ -90,6 +90,17 @@ router.get(
     async (req: Request, res: Response) => {
         try {
             const businessId = (req.user as any)._id;
+
+            const profile = await BusinessProfile.findOne({ user: businessId });
+            
+            // If no profile or not approved, block access
+            if (!profile || profile.status !== 'APPROVED') {
+                return res.status(403).json({ 
+                    message: 'Access Denied: Business not verified.',
+                    code: 'NOT_VERIFIED' 
+                });
+            }
+            
             const complaints = await Complaint.find({ business: businessId })
                 .populate('consumer', 'displayName') // Show the consumer's name
                 .sort({ createdAt: -1 });

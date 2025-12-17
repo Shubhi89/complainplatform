@@ -80,4 +80,18 @@ router.get(
   }
 );
 
+router.get('/verified', async (req: Request, res: Response) => {
+  try {
+    // Only fetch APPROVED profiles
+    // We select 'companyName', 'industry', and 'user' (which is the ID we need)
+    const businesses = await BusinessProfile.find({ status: 'APPROVED' })
+      .select('companyName industry user logoUrl'); 
+      
+    res.json(businesses);
+  } catch (error) {
+    console.error("Error fetching businesses:", error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
 export default router;
