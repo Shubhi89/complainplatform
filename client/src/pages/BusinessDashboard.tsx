@@ -24,27 +24,46 @@ interface Complaint {
   createdAt: string;
 }
 
+interface BusinessProfile {
+  companyName: string;
+  industry: string;
+  status: string;
+}
+
 const BusinessDashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [profile, setProfile] = useState<BusinessProfile | null>(null);
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [loading, setLoading] = useState(true);
   const [copySuccess, setCopySuccess] = useState('');
 
   // Fetch Complaints
-  const fetchComplaints = async () => {
-    try {
-      const res = await axios.get('/api/complaints/tagged');
-      setComplaints(res.data);
-    } catch (error) {
-      console.error("Error fetching complaints:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchComplaints();
+    const fetchData = async () => {
+      try {
+        // Run both requests in parallel
+        const [complaintsRes, profileRes] = await Promise.allSettled([
+          axios.get('/api/complaints/tagged'),
+          axios.get('/api/business/me') // Fetch the profile name
+        ]);
+
+        if (complaintsRes.status === 'fulfilled') {
+          setComplaints(complaintsRes.value.data);
+        }
+
+        if (profileRes.status === 'fulfilled') {
+          setProfile(profileRes.value.data);
+        }
+
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   // Handle Status Update
@@ -91,7 +110,7 @@ const BusinessDashboard = () => {
               <Building2 className="w-8 h-8 text-emerald-600" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{user?.displayName}</h1>
+              <h1 className="text-2xl font-bold text-gray-900">{profile?.companyName || user?.displayName}</h1>
               <div className="flex items-center gap-2 text-gray-500 text-sm mt-1">
                 <span className="font-mono bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
                   {user?._id}

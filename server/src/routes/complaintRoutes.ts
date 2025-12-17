@@ -3,6 +3,7 @@ import { requireRole } from '../middleware/authMiddleware';
 import User, { UserRole } from '../models/User';
 import Complaint, { ComplaintStatus } from '../models/Complaint';
 import { generateCustomId } from '../services/idGenerator';
+import BusinessProfile from '../models/BusinessProfile';
 import mongoose from 'mongoose';
 
 const router = express.Router();
@@ -212,6 +213,15 @@ router.get(
         return;
       }
 
+      const businessProfile = await BusinessProfile.findOne({ user: complaint.business._id });
+
+      const complaintData = complaint.toObject();
+      
+      // Attach the company name if it exists
+      if (businessProfile) {
+        (complaintData.business as any).companyName = businessProfile.companyName;
+      }
+
       // Security: Only allow the Consumer, the Business, or an Admin to view this
       const isConsumer = complaint.consumer._id.toString() === user._id.toString();
       const isBusiness = complaint.business._id.toString() === user._id.toString();
@@ -222,7 +232,7 @@ router.get(
         return;
       }
 
-      res.json(complaint);
+      res.json(complaintData);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Server Error' });

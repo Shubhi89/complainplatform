@@ -60,4 +60,24 @@ router.post(
   }
 );
 
+router.get(
+  '/me',
+  requireRole([UserRole.BUSINESS]),
+  async (req: Request, res: Response) => {
+    try {
+      const userId = (req.user as any)._id;
+      const profile = await BusinessProfile.findOne({ user: userId });
+
+      if (!profile) {
+        return res.status(404).json({ message: 'Profile not found' });
+      }
+
+      res.json(profile);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server Error' });
+    }
+  }
+);
+
 export default router;

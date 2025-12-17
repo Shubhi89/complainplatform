@@ -26,7 +26,10 @@ interface Complaint {
   description: string;
   status: "PENDING" | "OPEN" | "RESOLVED" | "CLOSED";
   consumer: { displayName: string };
-  business: { displayName: string };
+  business: {
+    displayName: string;
+    companyName?: string; // <--- Add this field
+  };
   thread: Reply[];
   createdAt: string;
 }
@@ -38,7 +41,8 @@ const ComplaintDetails = () => {
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const isLocked = complaint && ["RESOLVED", "CLOSED"].includes(complaint.status);
+  const isLocked =
+    complaint && ["RESOLVED", "CLOSED"].includes(complaint.status);
 
   // 1. Fetch Complaint Data
   const fetchComplaint = async () => {
@@ -131,7 +135,7 @@ const ComplaintDetails = () => {
               </span>{" "}
               and{" "}
               <span className="font-semibold text-gray-700">
-                {complaint.business.displayName}
+                {complaint.business.companyName || complaint.business.displayName}
               </span>
             </p>
           </div>
@@ -195,7 +199,9 @@ const ComplaintDetails = () => {
                         isBusiness ? "text-emerald-700" : "text-blue-700"
                       }`}
                     >
-                      {msg.userName}
+                      {isBusiness
+                        ? complaint.business.companyName || msg.userName
+                        : msg.userName}
                     </span>
                     <span className="text-[10px] text-gray-400">
                       {new Date(msg.timestamp).toLocaleTimeString([], {
