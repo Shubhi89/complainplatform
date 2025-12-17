@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
-import { PlusCircle, MessageSquare, Clock , ArrowRight} from "lucide-react";
+import { PlusCircle, MessageSquare, Clock , ArrowRight, LogOut} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface Complaint {
@@ -14,7 +14,7 @@ interface Complaint {
 }
 
 const ConsumerDashboard = () => {
-  const { user } = useAuth();
+  const { user , logout} = useAuth();
   const navigate = useNavigate();
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [loading, setLoading] = useState(true);
@@ -65,13 +65,24 @@ const ConsumerDashboard = () => {
             </p>
           </div>
 
-          <button
-            onClick={() => navigate("/complaint/new")}
-            className="w-full sm:w-auto flex items-center justify-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition shadow-sm"
-          >
-            <PlusCircle className="w-5 h-5 mr-2" />
-            New Complaint
-          </button>
+          <div className="flex gap-3">
+             {/* LOGOUT BUTTON */}
+             <button 
+               onClick={logout}
+               className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium shadow-sm"
+             >
+               <LogOut className="w-4 h-4" />
+               Logout
+             </button>
+
+             <button 
+               onClick={() => navigate('/create-complaint')}
+               className="flex items-center gap-2 px-5 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium shadow-sm shadow-blue-200"
+             >
+               <PlusCircle className="w-4 h-4" />
+               New Complaint
+             </button>
+          </div>
         </div>
 
         {/* Content Area */}
