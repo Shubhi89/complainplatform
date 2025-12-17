@@ -14,6 +14,7 @@ import BusinessDashboard from "./pages/BusinessDashboard.tsx";
 import BusinessVerification from "./pages/BusinessVerification.tsx";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
 import AdminVerify from './pages/AdminVerify';
+import ComplaintDetails from "./pages/ComplainDetails.tsx";
 
 // Placeholder components (We will build these next)
 
@@ -76,6 +77,13 @@ function App() {
             <AdminDashboard />
           </RoleRoute>
         } />
+
+        <Route path="/complaint/:id" element={
+          <RoleRoute allowedRoles={['CONSUMER', 'BUSINESS', 'ADMIN']}>
+            <ComplaintDetails />
+          </RoleRoute>
+        } />
+        
       </Routes>
     </Router>
   );

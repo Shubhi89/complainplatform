@@ -117,6 +117,11 @@ router.post(
                 return;
             }
 
+            if (['RESOLVED', 'CLOSED'].includes(complaint.status)) {
+                res.status(400).json({ message: 'This conversation is locked.' });
+                return;
+            }
+
             // Security Check: Ensure the user is actually part of this complaint
             const isConsumer = complaint.consumer.toString() === user._id.toString();
             const isBusiness = complaint.business.toString() === user._id.toString();
@@ -183,6 +188,41 @@ router.patch(
 
       res.json({ success: true, complaint });
 
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server Error' });
+    }
+  }
+);
+
+router.get(
+  '/:id',
+  requireRole([UserRole.CONSUMER, UserRole.BUSINESS, UserRole.ADMIN]), // Admins might need to see it too
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      const complaintId = req.params.id;
+      const user = req.user as any;
+
+      const complaint = await Complaint.findById(complaintId)
+        .populate('consumer', 'displayName email')
+        .populate('business', 'displayName email');
+
+      if (!complaint) {
+        res.status(404).json({ message: 'Complaint not found' });
+        return;
+      }
+
+      // Security: Only allow the Consumer, the Business, or an Admin to view this
+      const isConsumer = complaint.consumer._id.toString() === user._id.toString();
+      const isBusiness = complaint.business._id.toString() === user._id.toString();
+      const isAdmin = user.role === UserRole.ADMIN;
+
+      if (!isConsumer && !isBusiness && !isAdmin) {
+        res.status(403).json({ message: 'Not authorized to view this complaint' });
+        return;
+      }
+
+      res.json(complaint);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Server Error' });

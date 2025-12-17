@@ -8,7 +8,8 @@ import {
   CheckCircle, 
   Clock, 
   AlertCircle, 
-  Filter 
+  Filter ,
+  MessageSquare
 } from 'lucide-react';
 
 interface Complaint {
@@ -197,8 +198,12 @@ const BusinessDashboard = () => {
                       Acknowledge
                     </button>
                   )}
-                  <button className="flex-1 bg-white border border-gray-200 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
-                    Reply
+                  <button 
+                    onClick={() => navigate(`/complaint/${complaint._id}`)}
+                    className="flex-1 bg-indigo-50 border border-indigo-100 text-indigo-700 py-2 rounded-lg text-sm font-medium hover:bg-indigo-100 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    View Thread
                   </button>
                 </div>
               </div>
