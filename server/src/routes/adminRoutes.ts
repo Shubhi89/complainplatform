@@ -99,4 +99,34 @@ router.post(
   }
 );
 
+router.get(
+  '/stats',
+  requireRole([UserRole.ADMIN]),
+  async (req: Request, res: Response) => {
+    try {
+      // 1. Count Consumers (Users who are strictly consumers)
+      const totalUsers = await User.countDocuments({ role: UserRole.CONSUMER });
+
+      // 2. Count Total Businesses (Anyone with the Business Role)
+      const totalBusinesses = await User.countDocuments({ role: UserRole.BUSINESS });
+
+      // 3. Count Verified Businesses (Only those with APPROVED profiles)
+      const verifiedBusinesses = await BusinessProfile.countDocuments({ status: 'APPROVED' });
+
+      // 4. (Optional) Pending Verifications Count
+      const pendingVerifications = await BusinessProfile.countDocuments({ status: 'PENDING' });
+
+      res.json({
+        totalUsers,
+        totalBusinesses,
+        verifiedBusinesses,
+        pendingVerifications
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server Error' });
+    }
+  }
+);
+
 export default router;
