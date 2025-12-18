@@ -2,12 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ShieldAlert, KeyRound, ArrowRight } from "lucide-react";
+import {useAuth} from "../context/AuthContext";
 
 const AdminVerify = () => {
   const navigate = useNavigate();
   const [secret, setSecret] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const {checkAuth} = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,7 +19,7 @@ const AdminVerify = () => {
     try {
       await axios.post("/api/admin/verify-secret", { secret });
       console.log(secret);
-
+      await checkAuth();
       navigate("/admin");
     } catch (err: any) {
       setError("Invalid Access Code");
