@@ -22,7 +22,7 @@ function App() {
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/google-callback" element={<AuthSuccess />} />
+        <Route path="/google/callback" element={<AuthSuccess />} />
 
         <Route path="/" element={<RootRedirect />} />
         {/* Protected Routes */}
