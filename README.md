@@ -5,6 +5,11 @@
 ![Project Status](https://img.shields.io/badge/status-active-success.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
+## 🌐 Live Demo
+
+Check out the live application here:
+👉 **[Launch Bridge the Gap](https://complainplatform.vercel.app/)**
+
 ## 🚀 Features
 
 * **Role-Based Access Control (RBAC):** Distinct workflows for **Consumers**, **Businesses**, and **Admins**.
