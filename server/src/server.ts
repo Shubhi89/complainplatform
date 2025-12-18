@@ -31,7 +31,6 @@ app.use(
 
 // Middleware
 app.use(express.json()); // Parse JSON bodies
-app.use(cors()); // Allow cross-origin requests
 app.use(helmet()); // Security headers
 app.use(morgan("dev")); // Logger
 
