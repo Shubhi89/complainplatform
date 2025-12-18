@@ -23,7 +23,7 @@ router.get("/google", (req, res, next) => {
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    session: false,
+    session: true,
     failureRedirect: "/login",
   }),
   (req, res) => {
@@ -36,7 +36,7 @@ router.get(
     );
 
     // 3. Redirect to Frontend with token
-    res.redirect(`${process.env.CLIENT_URL}/google-callback?token=${token}`);
+    res.redirect(`${process.env.CLIENT_URL}/google-callback`);
   }
 );
 
