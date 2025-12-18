@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { UploadCloud, Building, FileText, ArrowRight } from "lucide-react";
+import { UploadCloud, Building, ArrowRight } from "lucide-react";
 
 const BusinessVerification = () => {
   const navigate = useNavigate();
