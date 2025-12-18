@@ -44,13 +44,13 @@ app.use(passport.session());
 app.use(attachUser);
 
 // Routes
-app.use("/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 
-app.use("/admin", adminRoutes);
+app.use("/api/admin", adminRoutes);
 
-app.use("/business", businessRoutes);
+app.use("/api/business", businessRoutes);
 
-app.use("/complaints", complaintRoutes);
+app.use("/api/complaints", complaintRoutes);
 
 // Basic  Route
 app.get("/", (req: Request, res: Response) => {
