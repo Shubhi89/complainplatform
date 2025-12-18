@@ -19,6 +19,16 @@ connectDB();
 const app: Application = express();
 const PORT = process.env.PORT || 5000;
 
+app.set("trust proxy", 1);
+
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true,
+  })
+);
+
 // Middleware
 app.use(express.json()); // Parse JSON bodies
 app.use(cors()); // Allow cross-origin requests
@@ -33,6 +43,8 @@ app.use(
     saveUninitialized: false,
     cookie: {
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      secure:true,
+      sameSite: "none",
     },
   })
 );

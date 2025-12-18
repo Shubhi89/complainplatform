@@ -7,6 +7,9 @@ interface AuthContextType extends AuthState {
   logout: () => Promise<void>;
 }
 
+axios.defaults.baseURL = import.meta.env.VITE_API_URL;
+axios.defaults.withCredentials = true;
+
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined
 );
