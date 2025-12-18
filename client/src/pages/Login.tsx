@@ -6,7 +6,7 @@ const Login = () => {
 
   const handleGoogleLogin = () => {
     const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
-    window.location.href = `${apiUrl}/auth/google?role=${role}`;
+    window.location.href = `${apiUrl}/api/auth/google?role=${role}`;
   };
 
   return (
