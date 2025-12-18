@@ -7,16 +7,14 @@ import User from '../models/User';
 
 const router = express.Router();
 
-// @route   POST /api/business/verification
-// @desc    Upload document and submit business profile
-// @access  Protected (Business Only)
+
 router.post(
   '/verification',
-  requireRole([UserRole.BUSINESS]), // Only Business users can do this
-  upload.single('document'),        // Expect a file field named "document"
+  requireRole([UserRole.BUSINESS]), 
+  upload.single('document'),        
   async (req: Request, res: Response): Promise<void> => {
     try {
-      // 1. Check if file was uploaded
+      
       if (!req.file) {
         res.status(400).json({ message: 'Document file is required' });
         return;
@@ -24,8 +22,7 @@ router.post(
 
       const { companyName, industry, description } = req.body;
 
-      // 2. Create the Business Profile
-      // req.user is guaranteed to exist because of requireRole middleware
+      
       const userId = (req.user as any)._id;
 
       // Check if profile already exists
@@ -40,12 +37,11 @@ router.post(
         companyName,
         industry,
         description,
-        documentUrl: req.file.path, // The Secure Cloudinary URL
+        documentUrl: req.file.path, 
         status: VerificationStatus.PENDING
       });
 
-      // 3. Update User model to reflect that verification is in progress (optional but good for UI)
-      // We keep isVerified false until Admin approves it.
+      
       
       res.status(201).json({ 
         success: true, 
@@ -83,7 +79,6 @@ router.get(
 router.get('/verified', async (req: Request, res: Response) => {
   try {
     // Only fetch APPROVED profiles
-    // We select 'companyName', 'industry', and 'user' (which is the ID we need)
     const businesses = await BusinessProfile.find({ status: 'APPROVED' })
       .select('companyName industry user logoUrl'); 
       

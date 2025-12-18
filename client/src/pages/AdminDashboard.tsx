@@ -24,7 +24,6 @@ interface DashboardStats {
 const AdminDashboard = () => {
   const navigate = useNavigate();
 
-  // State
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [verifications, setVerifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,7 +31,7 @@ const AdminDashboard = () => {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const { logout } = useAuth();
 
-  // Fetch Data (Parallel Requests)
+  // Fetch Data
   const fetchData = async () => {
     try {
       const [statsRes, verifyRes] = await Promise.all([
@@ -74,9 +73,8 @@ const AdminDashboard = () => {
         profileId: id,
         action,
       });
-      // Optimistic Update
+
       setVerifications((prev) => prev.filter((req) => req._id !== id));
-      // Update stats locally
       if (action === "APPROVED" && stats) {
         setStats({
           ...stats,
@@ -123,7 +121,6 @@ const AdminDashboard = () => {
 
         {/* --- STATS ROW --- */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          {/* Card 1: Consumers */}
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex items-center justify-between hover:shadow-md transition">
             <div>
               <p className="text-gray-500 text-sm font-medium mb-1">
@@ -138,7 +135,6 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Card 2: Businesses */}
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex items-center justify-between hover:shadow-md transition">
             <div>
               <p className="text-gray-500 text-sm font-medium mb-1">
@@ -153,7 +149,6 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Card 3: Verification Rate */}
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex items-center justify-between hover:shadow-md transition">
             <div>
               <p className="text-gray-500 text-sm font-medium mb-1">
@@ -204,7 +199,6 @@ const AdminDashboard = () => {
                   key={req._id}
                   className="p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-gray-50 transition"
                 >
-                  {/* Business Info */}
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="font-bold text-lg text-gray-900">

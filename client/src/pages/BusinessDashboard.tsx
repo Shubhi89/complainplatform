@@ -39,14 +39,12 @@ const BusinessDashboard = () => {
   const [profile, setProfile] = useState<BusinessProfile | null>(null);
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [loading, setLoading] = useState(true);
-  const [copySuccess, setCopySuccess] = useState("");
   const [isVerified, setIsVerified] = useState(false);
 
   // Fetch Complaints
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 1. Fetch Profile First
         const profileRes = await axios.get("/api/business/me");
         const userProfile = profileRes.data;
         setProfile(userProfile);
@@ -54,14 +52,12 @@ const BusinessDashboard = () => {
         // 2. Check Verification
         if (userProfile.status === "APPROVED") {
           setIsVerified(true);
-          // Only fetch complaints if verified
           const complaintsRes = await axios.get("/api/complaints/tagged");
           setComplaints(complaintsRes.data);
         } else {
           setIsVerified(false);
         }
       } catch (error: any) {
-        // Handle 403 (Not Verified) gracefully if it comes from the complaints route
         if (error.response?.data?.code === "NOT_VERIFIED") {
           setIsVerified(false);
         }
@@ -78,7 +74,6 @@ const BusinessDashboard = () => {
   const handleStatusUpdate = async (id: string, newStatus: string) => {
     try {
       await axios.patch(`/api/complaints/${id}/status`, { status: newStatus });
-      // Refresh list locally to show change immediately
       setComplaints((prev) =>
         prev.map((c) => (c._id === id ? { ...c, status: newStatus as any } : c))
       );
@@ -87,8 +82,6 @@ const BusinessDashboard = () => {
       alert("Failed to update status");
     }
   };
-
-  // Helper to Copy Business ID
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -108,7 +101,7 @@ const BusinessDashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-8">
       <div className="max-w-6xl mx-auto">
-        {/* Responsive Header Card */}
+        {/* Header */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-emerald-100 rounded-xl">
@@ -146,14 +139,12 @@ const BusinessDashboard = () => {
           </div>
         </div>
 
-        {/* Filters / Toolbar (Visual only for now) */}
         {loading ? (
           <div className="text-center py-20">
             <div className="animate-spin w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full mx-auto mb-4"></div>
             <p className="text-gray-500">Syncing business data...</p>
           </div>
         ) : !isVerified ? (
-          /* 🔒 LOCKED STATE (Not Verified) */
           <div className="bg-white rounded-2xl shadow-sm border border-orange-200 p-10 text-center max-w-2xl mx-auto mt-10">
             <div className="bg-orange-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
               <Lock className="w-10 h-10 text-orange-500" />
@@ -184,9 +175,7 @@ const BusinessDashboard = () => {
             </div>
           </div>
         ) : (
-          /* ✅ UNLOCKED STATE (Verified) */
           <>
-            {/* Filters */}
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-gray-800">
                 Incoming Complaints
@@ -196,7 +185,7 @@ const BusinessDashboard = () => {
               </button>
             </div>
 
-            {/* Complaints Grid */}
+            {/* Complaints*/}
             {complaints.length === 0 ? (
               <div className="text-center py-20 bg-white rounded-2xl shadow-sm border border-gray-100 border-dashed">
                 <div className="bg-gray-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">

@@ -6,8 +6,8 @@ export interface User {
   displayName: string;
   email: string;
   role: UserRole;
-  customId?: string; // e.g., USR-001
-  isVerified?: boolean; // For businesses
+  customId?: string; 
+  isVerified?: boolean; 
 }
 
 export interface AuthState {

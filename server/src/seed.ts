@@ -25,8 +25,7 @@ const seedDatabase = async () => {
     await BusinessProfile.deleteMany({});
     await Complaint.deleteMany({});
 
-    // (Admin Creation Removed as requested)
-
+    
     // 2. Create 20 Business Users & Profiles
     console.log('🏢 Creating 20 Businesses...');
     const businessUsers = [];
@@ -110,7 +109,7 @@ const seedDatabase = async () => {
       });
     }
 
-    console.log('✅ Database Seeded Successfully (No Admin Created)!');
+    console.log('✅ Database Seeded Successfully ');
     process.exit();
 
   } catch (error) {

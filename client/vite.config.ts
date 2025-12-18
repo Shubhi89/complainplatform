@@ -10,7 +10,6 @@ export default defineConfig({
         target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
-        // THIS IS THE KEY: Remove '/api' from the start of the path
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
     }

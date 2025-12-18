@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
-import { PlusCircle, MessageSquare, Clock , ArrowRight, LogOut} from "lucide-react";
+import {
+  PlusCircle,
+  MessageSquare,
+  Clock,
+  ArrowRight,
+  LogOut,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface Complaint {
@@ -14,7 +20,7 @@ interface Complaint {
 }
 
 const ConsumerDashboard = () => {
-  const { user , logout} = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,9 +58,7 @@ const ConsumerDashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-8">
       {" "}
-      {/* Responsive Padding */}
       <div className="max-w-5xl mx-auto">
-        {/* Responsive Header: Stacks on mobile, Row on desktop */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
@@ -66,22 +70,21 @@ const ConsumerDashboard = () => {
           </div>
 
           <div className="flex gap-3">
-             {/* LOGOUT BUTTON */}
-             <button 
-               onClick={logout}
-               className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium shadow-sm"
-             >
-               <LogOut className="w-4 h-4" />
-               Logout
-             </button>
+            <button
+              onClick={logout}
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium shadow-sm"
+            >
+              <LogOut className="w-4 h-4" />
+              Logout
+            </button>
 
-             <button 
-               onClick={() => navigate('/create-complaint')}
-               className="flex items-center gap-2 px-5 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium shadow-sm shadow-blue-200"
-             >
-               <PlusCircle className="w-4 h-4" />
-               New Complaint
-             </button>
+            <button
+              onClick={() => navigate("/complaint/new")}
+              className="flex items-center gap-2 px-5 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium shadow-sm shadow-blue-200"
+            >
+              <PlusCircle className="w-4 h-4" />
+              New Complaint
+            </button>
           </div>
         </div>
 
@@ -139,13 +142,12 @@ const ConsumerDashboard = () => {
                     </div>
                     <button
                       onClick={(e) => {
-                        e.stopPropagation(); // Prevents triggering parent clicks if any
+                        e.stopPropagation();
                         navigate(`/complaint/${complaint._id}`);
                       }}
                       className="w-full mt-5 sm:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-bold rounded-lg transition-colors flex items-center justify-center sm:justify-end gap-2"
                     >
                       <ArrowRight className="w-4 h-4" />
-                      {/* You can import ArrowRight from lucide-react if you want an icon */}
                     </button>
                   </div>
                 </div>

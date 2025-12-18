@@ -13,7 +13,7 @@ export interface IBusinessProfile extends Document {
   description: string;
   
   // Verification Data
-  documentUrl: string; // The Cloudinary URL
+  documentUrl: string; 
   status: VerificationStatus;
   rejectionReason?: string;
   submittedAt: Date;
@@ -22,7 +22,7 @@ export interface IBusinessProfile extends Document {
 const BusinessProfileSchema: Schema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
   
-  companyName: { type: String, required: true, index: true }, // Indexed for search
+  companyName: { type: String, required: true, index: true }, 
   industry: { type: String, required: true },
   description: { type: String, required: true },
 

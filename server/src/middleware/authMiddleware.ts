@@ -1,28 +1,27 @@
-import { Request, Response, NextFunction } from 'express';
-import { UserRole } from '../models/User';
+import { Request, Response, NextFunction } from "express";
+import { UserRole } from "../models/User";
 
-// 1. Basic Authentication Check (Is the user logged in?)
+// 1. Basic Authentication Check
 export const ensureAuth = (req: Request, res: Response, next: NextFunction) => {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.status(401).json({ message: 'Unauthorized: Please log in' });
+  res.status(401).json({ message: "Unauthorized: Please log in" });
 };
 
-// 2. Role-Based Access Control (Is the user an Admin/Business?)
+// 2. Role-Based Access Control
 export const requireRole = (roles: UserRole[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    
-    // First, ensure they are logged in (Safety check)
     if (!req.user) {
-      return res.status(401).json({ message: 'Unauthorized' });
+      return res.status(401).json({ message: "Unauthorized" });
     }
 
     const user = req.user as any;
 
-    // Check if the user's role is in the allowed list
     if (!roles.includes(user.role)) {
-      return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
+      return res
+        .status(403)
+        .json({ message: "Forbidden: Insufficient permissions" });
     }
 
     next();

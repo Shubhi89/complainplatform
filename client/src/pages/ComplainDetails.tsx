@@ -28,14 +28,14 @@ interface Complaint {
   consumer: { displayName: string };
   business: {
     displayName: string;
-    companyName?: string; // <--- Add this field
+    companyName?: string;
   };
   thread: Reply[];
   createdAt: string;
 }
 
 const ComplaintDetails = () => {
-  const { id } = useParams(); // Get ID from URL
+  const { id } = useParams();
   const navigate = useNavigate();
   const [complaint, setComplaint] = useState<Complaint | null>(null);
   const [newMessage, setNewMessage] = useState("");
@@ -53,7 +53,7 @@ const ComplaintDetails = () => {
     } catch (error) {
       console.error("Error fetching complaint", error);
       alert("Failed to load complaint. You may not be authorized.");
-      navigate(-1); // Go back
+      navigate(-1);
     } finally {
       setLoading(false);
     }
@@ -70,22 +70,21 @@ const ComplaintDetails = () => {
     }, 100);
   };
 
-  // 2. Send Reply
+  // Send Reply
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
 
     try {
-      // Optimistic UI update (optional, but let's stick to simple refresh first)
       await axios.post(`/api/complaints/${id}/reply`, { content: newMessage });
       setNewMessage("");
-      fetchComplaint(); // Refresh chat
+      fetchComplaint();
     } catch (error) {
       alert("Failed to send message");
     }
   };
 
-  // 3. Status Badge Helper
+  // 3. Status Badge
   const getStatusBadge = (status: string) => {
     const styles = {
       PENDING: "bg-yellow-100 text-yellow-800",
@@ -135,7 +134,8 @@ const ComplaintDetails = () => {
               </span>{" "}
               and{" "}
               <span className="font-semibold text-gray-700">
-                {complaint.business.companyName || complaint.business.displayName}
+                {complaint.business.companyName ||
+                  complaint.business.displayName}
               </span>
             </p>
           </div>
@@ -151,7 +151,6 @@ const ComplaintDetails = () => {
       {/* Chat Area */}
       <div className="flex-1 overflow-y-auto p-6">
         <div className="max-w-4xl mx-auto space-y-6 pb-20">
-          {/* Original Complaint Description */}
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div className="flex items-center gap-2 mb-3 text-sm text-gray-500">
               <AlertCircle className="w-4 h-4 text-indigo-500" />
@@ -170,7 +169,6 @@ const ComplaintDetails = () => {
                 key={msg._id}
                 className={`flex gap-4 ${isBusiness ? "flex-row-reverse" : ""}`}
               >
-                {/* Avatar */}
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                     isBusiness
@@ -185,7 +183,6 @@ const ComplaintDetails = () => {
                   )}
                 </div>
 
-                {/* Bubble */}
                 <div
                   className={`max-w-[80%] rounded-2xl p-4 ${
                     isBusiness
@@ -227,7 +224,6 @@ const ComplaintDetails = () => {
       <div className="bg-white border-t border-gray-200 p-4 sticky bottom-0">
         <div className="max-w-4xl mx-auto">
           {isLocked ? (
-            // 🔒 LOCKED STATE UI
             <div className="flex items-center justify-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-200 text-gray-500">
               <CheckCircle className="w-5 h-5 text-green-600" />
               <span className="font-medium">
@@ -239,7 +235,6 @@ const ComplaintDetails = () => {
               </span>
             </div>
           ) : (
-            // ✍️ ACTIVE STATE UI (Your existing form)
             <form
               onSubmit={handleSend}
               className="relative flex items-center gap-2"
