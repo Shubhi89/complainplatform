@@ -7,7 +7,8 @@ const AdminLogin = () => {
   const handleAdminLogin = () => {
     setLoading(true);
     // Force the role to ADMIN
-    window.location.href = "http://localhost:5000/auth/google?role=ADMIN";
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    window.location.href = `${apiUrl}/auth/google?role=ADMIN`;
   };
 
   return (

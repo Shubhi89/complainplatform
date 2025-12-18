@@ -36,7 +36,7 @@ router.get(
     );
 
     // 3. Redirect to Frontend with token
-    res.redirect(`http://localhost:5173/google-callback?token=${token}`);
+    res.redirect(`${process.env.CLIENT_URL}/google-callback?token=${token}`);
   }
 );
 

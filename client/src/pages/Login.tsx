@@ -5,7 +5,8 @@ const Login = () => {
   const [role, setRole] = useState<"CONSUMER" | "BUSINESS">("CONSUMER");
 
   const handleGoogleLogin = () => {
-    window.location.href = `http://localhost:5000/auth/google?role=${role}`;
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    window.location.href = `${apiUrl}/auth/google?role=${role}`;
   };
 
   return (
