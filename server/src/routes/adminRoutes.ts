@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import { requireRole } from "../middleware/authMiddleware";
-import { UserRole } from "../models/User";
+import { UserRole, IUser } from "../models/User";
 import BusinessProfile, { VerificationStatus } from "../models/BusinessProfile";
 import User from "../models/User";
 
@@ -8,7 +8,8 @@ const router = express.Router();
 
 // --- MIDDLEWARE---
 const requireSecret = (req: Request, res: Response, next: NextFunction) => {
-  if (!req.session || !(req.session as any).isSecretVerified) {
+  const user = req.user as IUser;
+  if (!user || !user.adminSecretVerified) {
     return res.status(403).json({
       message: "Admin Secret Required",
       requiresSecret: true,
@@ -20,7 +21,7 @@ const requireSecret = (req: Request, res: Response, next: NextFunction) => {
 router.post(
   "/verify-secret",
   requireRole([UserRole.ADMIN]),
-  (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
     const { secret } = req.body;
     const correctCode = process.env.ADMIN_SECRET_CODE;
 
@@ -30,12 +31,18 @@ router.post(
         .json({ success: false, message: "Invalid Secret Code" });
     }
 
-    if (req.session) {
-      (req.session as any).isSecretVerified = true;
-      req.session.save();
-    }
+    try {
+      const userId = (req.user as any)._id;
 
-    res.json({ success: true, message: "Admin access granted" });
+      await User.findByIdAndUpdate(userId, {
+        adminSecretVerified: true,
+      });
+
+      res.json({ success: true, message: "Admin access granted" });
+    } catch (error) {
+      console.error("Verification Save Error:", error);
+      res.status(500).json({ success: false, message: "Server Error" });
+    }
   }
 );
 
